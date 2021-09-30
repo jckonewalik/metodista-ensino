@@ -8,11 +8,19 @@ build:
   local:
     push: false
   artifacts:
+    - image: jckonewalik/methodist_education_server
+      context: server
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: jckonewalik/methodist_education_client
       context: client
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: 'src/**/*.tsx'
+          - src: "src/**/*.tsx"
             dest: .

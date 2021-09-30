@@ -7,7 +7,14 @@ spec:
   rules:
     - host: metodista-ensino.dev
       http:
-        paths:              
+        paths:
+          - pathType: Prefix
+            path: "/api"
+            backend:
+              service:
+                name: server-srv
+                port:
+                  number: 3000
           - pathType: Prefix
             path: "/"
             backend:
