@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CourseDTO } from './course.dto';
-import { Course } from './course.entity';
 import { CourseRepository } from './course.repository';
 
 @Injectable()
