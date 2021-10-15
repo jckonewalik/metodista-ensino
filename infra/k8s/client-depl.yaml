@@ -15,6 +15,11 @@ spec:
       containers:
         - name: client
           image: jckonewalik/methodist_education_client
+          env:
+            - name: INTERNAL_API_URL
+              value: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
+            - name: EXTERNAL_API_URL
+              value: "/"
 ---
 apiVersion: v1
 kind: Service
