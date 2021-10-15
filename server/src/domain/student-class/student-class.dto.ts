@@ -3,12 +3,21 @@ import { StudentClass } from './student-class.entity';
 
 export class InsertStudentClassDTO {
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Informe o nome da turma' })
   name: string;
 
-  @IsUUID()
-  @IsNotEmpty()
+  @IsUUID(4, { message: 'O id do curso não é válido' })
+  @IsNotEmpty({ message: 'Informe o curso' })
   courseId: string;
+
+  @IsBoolean()
+  isActive: boolean;
+}
+
+export class UpdateStudentClassDTO {
+  @IsString()
+  @IsNotEmpty({ message: 'Informe o nome da turma' })
+  name: string;
 
   @IsBoolean()
   isActive: boolean;

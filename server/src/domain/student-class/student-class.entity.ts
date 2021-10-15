@@ -2,6 +2,7 @@ import { BadRequestException } from '../../exceptions/bad-request.exception';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { Course } from '../course/course.entity';
+import { UpdateStudentClassDTO } from './student-class.dto';
 @Entity({ name: 'student_class' })
 export class StudentClass {
   @PrimaryColumn()
@@ -44,5 +45,11 @@ export class StudentClass {
     studentClass.isActive = isActive;
 
     return studentClass;
+  }
+
+  update(studentClass: UpdateStudentClassDTO) {
+    this.name = studentClass.name;
+    this.isActive = studentClass.isActive;
+    this.updatedAt = new Date();
   }
 }

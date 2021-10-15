@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
 } from '@nestjs/common';
 import { NotFoundException } from '../../exceptions/not-found.exception';
 import { CourseRepository } from '../course/course.repository';
@@ -12,6 +13,7 @@ import {
   InsertStudentClassDTO,
   StudentClassDTO,
   StudentClassSummaryDTO,
+  UpdateStudentClassDTO,
 } from './student-class.dto';
 import { StudentClass } from './student-class.entity';
 import { StudentClassRepository } from './student-class.repository';
@@ -56,5 +58,18 @@ export class StudentClassController {
       throw new NotFoundException('A turma não existe', 'id');
     }
     return new StudentClassDTO(response);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() studentClass: UpdateStudentClassDTO,
+  ) {
+    const original = await this.studentClassRepository.findOne({ id });
+    if (original == null) {
+      throw new NotFoundException('A turma não existe', 'id');
+    }
+    original.update(studentClass);
+    await this.studentClassRepository.save(original);
   }
 }
