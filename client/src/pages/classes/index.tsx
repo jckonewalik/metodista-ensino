@@ -14,7 +14,7 @@ interface ClassesPagePros {
 const ClassesPage: NextPage<ClassesPagePros> = ({ studentClasses }) => {
   const router = useRouter();
   const handleAddClick = () => {
-    router.push('/classes/edit');
+    router.push('/classes/new');
   };
   return (
     <div className=" bg-red-100 h-screen relative">

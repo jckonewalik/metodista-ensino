@@ -9,17 +9,9 @@ interface Props {
 
 export default function AppAlert({ severity, variant, children }: Props) {
   const [open, setOpen] = useState(true);
-  return (
-    <>
-      {open && (
-        <Alert
-          onClose={() => setOpen(false)}
-          variant={variant}
-          severity={severity}
-        >
-          {children}
-        </Alert>
-      )}
-    </>
-  );
+  return open ? (
+    <Alert onClose={() => setOpen(false)} variant={variant} severity={severity}>
+      {children}
+    </Alert>
+  ) : null;
 }
