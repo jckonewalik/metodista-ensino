@@ -9,14 +9,23 @@ import {
   Button,
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
-import { NextPage } from 'next';
-import { SyntheticEvent, useState } from 'react';
-import Header from '../../../components/Header';
+import { GetServerSideProps, NextPage } from 'next';
+import { SyntheticEvent, useEffect, useState } from 'react';
+import Header from '../../../../components/Header';
+import buildClient from '../../../../api/build-client';
+import { CourseDTO } from '../../../../domain/course.dto';
+import useRequest from '../../../../hooks/use-request';
+import { StudentClassDTO } from '../../../../domain/student-class.dto';
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+}
+
+interface NewClassPagePros {
+  studentClass?: StudentClassDTO;
+  courses: CourseDTO[];
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -35,21 +44,37 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const NewClassPage: NextPage = () => {
-  const handleOnSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-  };
-  const courses = [
-    {
-      label: 'Fundamentos da Fé',
-      id: 1,
-    },
-    {
-      label: 'CDV',
-      id: 2,
-    },
-  ];
+const NewClassPage: NextPage<NewClassPagePros> = ({
+  studentClass,
+  courses,
+}) => {
   const [tab, setTab] = useState(0);
+  const [name, setName] = useState('');
+  const [course, setCourse] = useState<CourseDTO | undefined | null>(
+    courses[0]
+  );
+  const [active, setActive] = useState(true);
+  const { doRequest, errors } = useRequest({
+    url: '/api/studentclasses',
+    method: 'post',
+    body: {
+      courseId: course?.id,
+      name,
+      isActive: active,
+    },
+  });
+
+  useEffect(() => {
+    if (studentClass) {
+      setName(studentClass.name);
+      setCourse(courses.find((course) => course.id === studentClass.courseId));
+      setActive(studentClass.isActive);
+    }
+  }, [studentClass, courses]);
+
+  const handleOnSave = async () => {
+    doRequest();
+  };
   const handleTabChange = (
     event: SyntheticEvent<Element, Event>,
     value: any
@@ -74,11 +99,15 @@ const NewClassPage: NextPage = () => {
           </Tabs>
         </Box>
         <TabPanel index={0} value={tab}>
-          <form onSubmit={handleOnSubmit} className="flex flex-col p-5">
+          <form className="flex flex-col p-5">
             <Autocomplete
-              className=""
+              disabled
               disablePortal
-              onChange={(event, newValue) => console.log(newValue)}
+              value={course}
+              onChange={(event, newValue) => {
+                setCourse(newValue);
+              }}
+              getOptionLabel={(option) => option.name}
               isOptionEqualToValue={(option, value) => {
                 return option.id === value.id;
               }}
@@ -88,10 +117,21 @@ const NewClassPage: NextPage = () => {
                 <TextField {...params} label="Curso" variant="standard" />
               )}
             />
-            <TextField className="mt-5" label="Nome" variant="standard" />
+            <TextField
+              className="mt-5"
+              label="Nome"
+              value={name}
+              variant="standard"
+              onChange={(element) => setName(element.target.value)}
+            />
             <FormControlLabel
               className="mt-5"
-              control={<Checkbox defaultChecked />}
+              control={
+                <Checkbox
+                  checked={active}
+                  onChange={(event) => setActive(event.target.checked)}
+                />
+              }
               label="Ativo"
             />
           </form>
@@ -120,16 +160,31 @@ const NewClassPage: NextPage = () => {
           </form>
         </TabPanel>
       </div>
+      {errors}
       <div className="flex flex-row justify-between p-5">
         <Button variant="outlined" startIcon={<Cancel />}>
           Cancelar
         </Button>
-        <Button variant="contained" endIcon={<Save />}>
+        <Button variant="contained" endIcon={<Save />} onClick={handleOnSave}>
           Salvar
         </Button>
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  //@ts-ignore
+  const { id } = context.params;
+  const client = buildClient({ ctx: context });
+  let studentClass;
+  try {
+    studentClass = (await client.get(`/api/studentclasses/${id}`)).data;
+  } catch (err) {
+    studentClass = undefined;
+  }
+  const courses = await (await client.get('/api/courses')).data;
+  return { props: { studentClass, courses } };
 };
 
 export default NewClassPage;

@@ -1,11 +1,17 @@
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import ClassCard from '../../components/ClassCard';
 import Header from '../../components/Header';
+import buildClient from '../../api/build-client';
+import { StudentClassSummaryDTO } from '../../domain/student-class.dto';
 
-const ClassesPage: NextPage = () => {
+interface ClassesPagePros {
+  studentClasses: StudentClassSummaryDTO[];
+}
+
+const ClassesPage: NextPage<ClassesPagePros> = ({ studentClasses }) => {
   const router = useRouter();
   const handleAddClick = () => {
     router.push('/classes/edit');
@@ -14,31 +20,16 @@ const ClassesPage: NextPage = () => {
     <div className=" bg-red-100 h-screen relative">
       <Header />
       <div className="grid auto-rows-min h-5/6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 overflow-y-scroll">
-        <ClassCard
-          id="1"
-          course="Fundamentos da Fé"
-          name="Turma 1 - 2021"
-          students={10}
-        />
-        <ClassCard
-          id="2"
-          course="Fundamentos da Fé"
-          name="Turma 1 - 2021"
-          students={20}
-        />
-        <ClassCard id="3" course="CDV" students={30} name="Turma 1 - 2021" />
-        <ClassCard
-          id="4"
-          course="Homem ao Máximo"
-          name="Turma 1 - 2021"
-          students={4}
-        />
-        <ClassCard
-          id="5"
-          course="Curso de Casais"
-          name="Turma 1 - 2021"
-          students={15}
-        />
+        {studentClasses.map((studentClass) => (
+          <ClassCard
+            key={studentClass.id}
+            id={studentClass.id}
+            course={studentClass.course}
+            name={studentClass.name}
+            students={studentClass.numberOfStudents}
+            active={studentClass.isActive}
+          />
+        ))}
       </div>
       <Fab
         className="absolute right-10 bottom-10"
@@ -50,6 +41,12 @@ const ClassesPage: NextPage = () => {
       </Fab>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const client = buildClient({ ctx: context });
+  const result = await client.get('/api/studentclasses');
+  return { props: { studentClasses: result.data } };
 };
 
 export default ClassesPage;
