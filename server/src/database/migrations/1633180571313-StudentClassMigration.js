@@ -29,7 +29,7 @@ module.exports = class StudentClassMigration1633180571313 {
           {
             name: 'created_by',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'created_at',

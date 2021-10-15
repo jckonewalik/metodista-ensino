@@ -1,9 +1,9 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Response } from 'express';
-import { BadRequestException } from 'src/exceptions/bad-request.exception';
-import { CustomException } from 'src/exceptions/custom.exception';
-import { NotFoundException } from 'src/exceptions/not-found.exception';
-import { RequestValidationException } from 'src/exceptions/request-validation.exception';
+import { BadRequestException } from '../exceptions/bad-request.exception';
+import { CustomException } from '../exceptions/custom.exception';
+import { NotFoundException } from '../exceptions/not-found.exception';
+import { RequestValidationException } from '../exceptions/request-validation.exception';
 
 @Catch(RequestValidationException, NotFoundException, BadRequestException)
 export class CustomExceptionFilter implements ExceptionFilter {

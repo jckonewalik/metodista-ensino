@@ -3,7 +3,7 @@ import { Course } from './course.entity';
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
-  findActives() {
-    return this.find({ isActive: true });
+  async findActives() {
+    return await this.find({ isActive: true });
   }
 }

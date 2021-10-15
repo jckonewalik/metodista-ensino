@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity()
 export class Course {
@@ -22,4 +23,15 @@ export class Course {
 
   @Column({ name: 'updated_at' })
   updatedAt: Date;
+
+  private constructor() {}
+
+  static create(name: string, isActive: boolean): Course {
+    const course = new Course();
+    course.id = uuidv4();
+    course.name = name;
+    course.isActive = isActive;
+
+    return course;
+  }
 }

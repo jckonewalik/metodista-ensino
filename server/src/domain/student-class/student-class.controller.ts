@@ -1,13 +1,60 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
-import { InsertStudentClassDTO } from './student-class.dto';
-import { StudentClassesService } from './student-class.service';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
+import { NotFoundException } from '../../exceptions/not-found.exception';
+import { CourseRepository } from '../course/course.repository';
+import {
+  InsertStudentClassDTO,
+  StudentClassDTO,
+  StudentClassSummaryDTO,
+} from './student-class.dto';
+import { StudentClass } from './student-class.entity';
+import { StudentClassRepository } from './student-class.repository';
 
 @Controller('/api/studentclasses')
 export class StudentClassController {
-  constructor(private studentClassService: StudentClassesService) {}
+  constructor(
+    private courseRepository: CourseRepository,
+    private studentClassRepository: StudentClassRepository,
+  ) {}
 
   @Post()
-  createStudentClass(@Body() student: InsertStudentClassDTO) {
-    return this.studentClassService.createStudentClass(student);
+  async create(
+    @Body() student: InsertStudentClassDTO,
+  ): Promise<StudentClassDTO> {
+    const course = await this.courseRepository.findOne(student.courseId);
+    if (!course) {
+      throw new NotFoundException('Selected course does not exist', 'courseId');
+    }
+    const studentClass = StudentClass.create(
+      course,
+      student.name,
+      student.isActive,
+    );
+    const insertedCourse = await this.studentClassRepository.save(studentClass);
+    return new StudentClassDTO(insertedCourse);
+  }
+
+  @Get()
+  async list(): Promise<StudentClassSummaryDTO[]> {
+    return await (
+      await this.studentClassRepository.getStudentClassesSumary()
+    ).map((studentClass) => new StudentClassSummaryDTO(studentClass));
+  }
+
+  @Get(':id')
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<StudentClassDTO> {
+    const response = await this.studentClassRepository.findOne({ id });
+    if (response == null) {
+      throw new NotFoundException('A turma não existe', 'id');
+    }
+    return new StudentClassDTO(response);
   }
 }

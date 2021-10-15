@@ -27,3 +27,18 @@ export class StudentClassDTO {
   name: string;
   isActive: boolean;
 }
+
+export class StudentClassSummaryDTO {
+  constructor(studentClass: StudentClass) {
+    this.id = studentClass.id;
+    this.course = studentClass.course?.name;
+    this.name = studentClass.name;
+    this.isActive = studentClass.isActive;
+  }
+
+  id: string;
+  course: string;
+  name: string;
+  isActive: boolean;
+  numberOfStudents: number;
+}

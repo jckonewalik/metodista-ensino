@@ -7,7 +7,7 @@ export class CoursesController {
   constructor(private readonly service: CoursesService) {}
 
   @Get()
-  findAll(@Query('active') onlyActives): Promise<CourseDTO[]> {
-    return this.service.getCourses(onlyActives);
+  async findAll(@Query('active') onlyActives): Promise<CourseDTO[]> {
+    return await this.service.getCourses(!!onlyActives);
   }
 }

@@ -1,5 +1,7 @@
+import { BadRequestException } from '../../exceptions/bad-request.exception';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-
+import { v4 as uuidv4 } from 'uuid';
+import { Course } from '../course/course.entity';
 @Entity({ name: 'student_class' })
 export class StudentClass {
   @PrimaryColumn()
@@ -25,4 +27,22 @@ export class StudentClass {
 
   @Column({ name: 'updated_at' })
   updatedAt: Date;
+
+  course: Course;
+
+  private constructor() {}
+
+  static create(course: Course, name, isActive): StudentClass {
+    if (!course.isActive) {
+      throw new BadRequestException('Course is not active', 'courseId');
+    }
+
+    const studentClass = new StudentClass();
+    studentClass.id = uuidv4();
+    studentClass.courseId = course.id;
+    studentClass.name = name;
+    studentClass.isActive = isActive;
+
+    return studentClass;
+  }
 }

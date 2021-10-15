@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection, getConnectionOptions } from 'typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { Course } from './domain/course/course.entity';
 import { CourseModule } from './domain/course/course.module';
 import { CustomExceptionFilter } from './filters/custom-exception.filter';
@@ -22,9 +20,8 @@ import { StudentClassModule } from './domain/student-class/student-class.module'
         }),
     }),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
