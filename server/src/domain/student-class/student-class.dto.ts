@@ -1,4 +1,5 @@
 import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { Course } from '../course/course.entity';
 import { StudentClass } from './student-class.entity';
 
 export class InsertStudentClassDTO {
@@ -24,27 +25,26 @@ export class UpdateStudentClassDTO {
 }
 
 export class StudentClassDTO {
-  constructor(studentClass: StudentClass) {
+  constructor(studentClass: StudentClass, course: Course) {
     this.id = studentClass.id;
-    this.courseId = studentClass.courseId;
+    this.course = {
+      id: course.id,
+      name: course.name,
+    };
     this.name = studentClass.name;
     this.isActive = studentClass.isActive;
   }
 
   id: string;
-  courseId: string;
+  course: {
+    id: string;
+    name: string;
+  };
   name: string;
   isActive: boolean;
 }
 
 export class StudentClassSummaryDTO {
-  constructor(studentClass: StudentClass) {
-    this.id = studentClass.id;
-    this.course = studentClass.course?.name;
-    this.name = studentClass.name;
-    this.isActive = studentClass.isActive;
-  }
-
   id: string;
   course: string;
   name: string;

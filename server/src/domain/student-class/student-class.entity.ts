@@ -29,8 +29,6 @@ export class StudentClass {
   @Column({ name: 'updated_at' })
   updatedAt: Date;
 
-  course: Course;
-
   private constructor() {}
 
   static create(course: Course, name, isActive): StudentClass {

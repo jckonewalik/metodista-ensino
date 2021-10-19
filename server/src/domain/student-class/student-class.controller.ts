@@ -39,25 +39,26 @@ export class StudentClassController {
       student.isActive,
     );
     const insertedCourse = await this.studentClassRepository.save(studentClass);
-    return new StudentClassDTO(insertedCourse);
+    return new StudentClassDTO(insertedCourse, course);
   }
 
   @Get()
   async list(): Promise<StudentClassSummaryDTO[]> {
-    return await (
-      await this.studentClassRepository.getStudentClassesSumary()
-    ).map((studentClass) => new StudentClassSummaryDTO(studentClass));
+    return await this.studentClassRepository.getStudentClassesSumary();
   }
 
   @Get(':id')
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<StudentClassDTO> {
-    const response = await this.studentClassRepository.findOne({ id });
-    if (response == null) {
+    const studentClass = await this.studentClassRepository.findOne({ id });
+    if (studentClass == null) {
       throw new NotFoundException('A turma não existe', 'id');
     }
-    return new StudentClassDTO(response);
+    const course = await this.courseRepository.findOne({
+      id: studentClass.courseId,
+    });
+    return new StudentClassDTO(studentClass, course);
   }
 
   @Put(':id')
