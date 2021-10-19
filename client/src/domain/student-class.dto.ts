@@ -1,9 +1,9 @@
+import { CourseDTO } from './course.dto';
+
 export class InsertStudentClassDTO {
-  constructor(
-    public name: string,
-    public courseId?: string,
-    public isActive?: boolean
-  ) {}
+  name?: string;
+  courseId?: string;
+  isActive: boolean = true;
 }
 
 export class StudentClassSummaryDTO {
@@ -17,10 +17,8 @@ export class StudentClassSummaryDTO {
 }
 
 export class StudentClassDTO {
-  constructor(
-    public id: string,
-    public courseId: string,
-    public name: string,
-    public isActive: boolean
-  ) {}
+  id?: string;
+  course?: CourseDTO | null = null;
+  name?: string = '';
+  isActive: boolean = true;
 }

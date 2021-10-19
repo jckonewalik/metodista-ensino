@@ -13,8 +13,12 @@ interface ClassesPagePros {
 
 const ClassesPage: NextPage<ClassesPagePros> = ({ studentClasses }) => {
   const router = useRouter();
-  const handleAddClick = () => {
+  const addNewStudentClass = () => {
     router.push('/classes/new');
+  };
+
+  const selectStudentClass = (id: string) => {
+    router.push(`classes/${id}/edit`);
   };
   return (
     <div className=" bg-red-100 h-screen relative">
@@ -23,11 +27,8 @@ const ClassesPage: NextPage<ClassesPagePros> = ({ studentClasses }) => {
         {studentClasses.map((studentClass) => (
           <ClassCard
             key={studentClass.id}
-            id={studentClass.id}
-            course={studentClass.course}
-            name={studentClass.name}
-            students={studentClass.numberOfStudents}
-            active={studentClass.isActive}
+            studentClass={studentClass}
+            onClick={() => selectStudentClass(studentClass.id)}
           />
         ))}
       </div>
@@ -35,7 +36,7 @@ const ClassesPage: NextPage<ClassesPagePros> = ({ studentClasses }) => {
         className="absolute right-10 bottom-10"
         color="primary"
         aria-label="add"
-        onClick={handleAddClick}
+        onClick={addNewStudentClass}
       >
         <AddIcon />
       </Fab>

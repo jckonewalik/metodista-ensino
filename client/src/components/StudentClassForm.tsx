@@ -9,11 +9,12 @@ import {
   Button,
 } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import { CourseDTO } from '../domain/course.dto';
-import { StudentClassDTO } from '../domain/student-class.dto';
-import useRequest from '../hooks/use-request';
-import { useRouter } from 'next/dist/client/router';
+import {
+  InsertStudentClassDTO,
+  StudentClassDTO,
+} from '../domain/student-class.dto';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -40,13 +41,15 @@ function TabPanel(props: TabPanelProps) {
 interface StudentClassFormProps {
   studentClass?: StudentClassDTO;
   courses: CourseDTO[];
-  action: 'save' | 'update';
+  onSave: (studentClass: InsertStudentClassDTO) => void;
+  onCancel: () => void;
 }
 
 export default function StudentClassForm({
   studentClass,
   courses,
-  action,
+  onSave,
+  onCancel,
 }: StudentClassFormProps) {
   const [tab, setTab] = useState(0);
   const handleTabChange = (
@@ -55,33 +58,10 @@ export default function StudentClassForm({
   ) => {
     setTab(value);
   };
-  const [name, setName] = useState('');
-  const [course, setCourse] = useState<CourseDTO | undefined | null>(
-    courses[0]
+
+  const [state, setState] = useState<StudentClassDTO>(
+    studentClass == undefined ? new StudentClassDTO() : studentClass
   );
-  const [active, setActive] = useState(true);
-
-  useEffect(() => {
-    if (studentClass) {
-      setName(studentClass.name);
-      setCourse(courses.find((course) => course.id === studentClass.courseId));
-      setActive(studentClass.isActive);
-    }
-  }, [studentClass, courses]);
-
-  const { doRequest, errors } = useRequest({
-    url:
-      action === 'save'
-        ? '/api/studentclasses'
-        : `/api/studentclasses/${studentClass?.id}`,
-    method: action === 'save' ? 'post' : 'put',
-    body: {
-      courseId: course?.id,
-      name,
-      isActive: active,
-    },
-  });
-  const router = useRouter();
 
   return (
     <div className="flex flex-1 flex-col">
@@ -102,11 +82,11 @@ export default function StudentClassForm({
         <TabPanel index={0} value={tab}>
           <form className="flex flex-col p-5">
             <Autocomplete
-              disabled={action === 'update'}
+              disabled={state.id !== undefined}
               disablePortal
-              value={course}
+              value={state.course}
               onChange={(event, newValue) => {
-                setCourse(newValue);
+                setState({ ...state, course: newValue });
               }}
               getOptionLabel={(option) => option.name}
               isOptionEqualToValue={(option, value) => {
@@ -121,16 +101,20 @@ export default function StudentClassForm({
             <TextField
               className="mt-5"
               label="Nome"
-              value={name}
+              value={state.name}
               variant="standard"
-              onChange={(element) => setName(element.target.value)}
+              onChange={(element) =>
+                setState({ ...state, name: element.target.value })
+              }
             />
             <FormControlLabel
               className="mt-5"
               control={
                 <Checkbox
-                  checked={active}
-                  onChange={(event) => setActive(event.target.checked)}
+                  checked={state.isActive}
+                  onChange={(event) =>
+                    setState({ ...state, isActive: event.target.checked })
+                  }
                 />
               }
               label="Ativo"
@@ -161,16 +145,21 @@ export default function StudentClassForm({
           </form>
         </TabPanel>
       </div>
-      <div className="bg-white pl-2 pr-2">{errors}</div>
       <div className="flex flex-row justify-between p-5">
-        <Button
-          variant="outlined"
-          startIcon={<Cancel />}
-          onClick={() => router.back()}
-        >
+        <Button variant="outlined" startIcon={<Cancel />} onClick={onCancel}>
           Cancelar
         </Button>
-        <Button variant="contained" endIcon={<Save />} onClick={doRequest}>
+        <Button
+          variant="contained"
+          endIcon={<Save />}
+          onClick={() =>
+            onSave({
+              name: state.name,
+              isActive: state.isActive,
+              courseId: state.course?.id,
+            })
+          }
+        >
           Salvar
         </Button>
       </div>

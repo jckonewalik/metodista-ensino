@@ -18,9 +18,10 @@ const EditClassPage: NextPage<EditClassPagePros> = ({
     <div className="flex flex-col h-screen bg-red-100">
       <Header />
       <StudentClassForm
-        action="update"
         courses={courses}
         studentClass={studentClass}
+        onSave={() => {}}
+        onCancel={() => {}}
       />
     </div>
   );
@@ -30,13 +31,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   //@ts-ignore
   const { id } = context.params;
   const client = buildClient({ ctx: context });
-  let studentClass;
-  try {
-    studentClass = (await client.get(`/api/studentclasses/${id}`)).data;
-  } catch (err) {
-    studentClass = undefined;
-  }
-  const courses = await (await client.get('/api/courses')).data;
+  const studentClass: StudentClassDTO = (
+    await client.get(`/api/studentclasses/${id}`)
+  ).data;
+  const courses = [studentClass.course];
   return { props: { studentClass, courses } };
 };
 
