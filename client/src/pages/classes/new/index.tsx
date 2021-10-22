@@ -1,13 +1,15 @@
+import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import { useState } from 'react';
 import buildClient from '../../../api/build-client';
+import { getCourses } from '../../../api/courses.api';
 import { postStudentClasses } from '../../../api/student-classes.api';
 import AppAlert from '../../../components/AppAlert';
 import Header from '../../../components/Header';
 import StudentClassForm from '../../../components/StudentClassForm';
 import { CourseDTO } from '../../../domain/course.dto';
-import { InsertStudentClassDTO } from '../../../domain/student-class.dto';
+import { StudentClassDTO } from '../../../domain/student-class.dto';
 
 interface NewClassPagePros {
   courses: CourseDTO[];
@@ -24,12 +26,12 @@ const NewStudentClassPage: NextPage<NewClassPagePros> = ({ courses }) => {
     messages: [],
   });
   const router = useRouter();
-  const saveStudentClass = async (studentClass: InsertStudentClassDTO) => {
+  const saveStudentClass = async (studentClass: StudentClassDTO) => {
     try {
-      const { id } = await postStudentClasses({
+      const { id } = await postStudentClasses(axios, {
         name: studentClass.name,
         isActive: studentClass.isActive,
-        courseId: studentClass.courseId,
+        courseId: studentClass.course?.id,
       });
       setMessages({
         isError: false,
@@ -39,6 +41,7 @@ const NewStudentClassPage: NextPage<NewClassPagePros> = ({ courses }) => {
     } catch (err) {
       setMessages({
         isError: true,
+        //@ts-ignore
         messages: err.response.data.errors.map((err) => err.message),
       });
     }
@@ -50,7 +53,9 @@ const NewStudentClassPage: NextPage<NewClassPagePros> = ({ courses }) => {
       <StudentClassForm
         courses={courses}
         onSave={saveStudentClass}
-        onCancel={() => {}}
+        onCancel={() => {
+          router.push('/classes');
+        }}
       />
       {messages.messages.length ? (
         <AppAlert
@@ -66,13 +71,9 @@ const NewStudentClassPage: NextPage<NewClassPagePros> = ({ courses }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const client = buildClient({ ctx: context });
-  const courses = await (
-    await client.get('/api/courses', {
-      params: {
-        active: true,
-      },
-    })
-  ).data;
+  const courses = await getCourses(client, {
+    active: true,
+  });
   return { props: { courses } };
 };
 

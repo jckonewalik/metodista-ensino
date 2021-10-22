@@ -41,7 +41,7 @@ function TabPanel(props: TabPanelProps) {
 interface StudentClassFormProps {
   studentClass?: StudentClassDTO;
   courses: CourseDTO[];
-  onSave: (studentClass: InsertStudentClassDTO) => void;
+  onSave: (studentClass: StudentClassDTO) => void;
   onCancel: () => void;
 }
 
@@ -152,13 +152,7 @@ export default function StudentClassForm({
         <Button
           variant="contained"
           endIcon={<Save />}
-          onClick={() =>
-            onSave({
-              name: state.name,
-              isActive: state.isActive,
-              courseId: state.course?.id,
-            })
-          }
+          onClick={() => onSave(state)}
         >
           Salvar
         </Button>

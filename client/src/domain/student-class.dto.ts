@@ -6,14 +6,17 @@ export class InsertStudentClassDTO {
   isActive: boolean = true;
 }
 
+export class UpdateStudentClassDTO {
+  name?: string;
+  isActive: boolean = true;
+}
+
 export class StudentClassSummaryDTO {
-  constructor(
-    public id: string,
-    public course: string,
-    public name: string,
-    public isActive: boolean,
-    public numberOfStudents: number
-  ) {}
+  id?: string;
+  course?: string;
+  name?: string;
+  isActive?: boolean;
+  numberOfStudents: number = 0;
 }
 
 export class StudentClassDTO {
