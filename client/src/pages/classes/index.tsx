@@ -28,18 +28,15 @@ const ClassesPage: NextPage<ClassesPagePros> = ({ studentClasses }) => {
           <ClassCard
             key={studentClass.id}
             studentClass={studentClass}
-            onClick={() => selectStudentClass(studentClass.id)}
+            onClick={() => selectStudentClass(studentClass.id || '')}
           />
         ))}
       </div>
-      <Fab
-        className="absolute right-10 bottom-10"
-        color="primary"
-        aria-label="add"
-        onClick={addNewStudentClass}
-      >
-        <AddIcon />
-      </Fab>
+      <div className="absolute right-10 bottom-10">
+        <Fab color="primary" aria-label="add" onClick={addNewStudentClass}>
+          <AddIcon />
+        </Fab>
+      </div>
     </div>
   );
 };

@@ -28,7 +28,7 @@ const EditStudentClassPage: NextPage<EditClassPagePros> = ({
   courses,
 }) => {
   const router = useRouter();
-  if (!!studentClass) {
+  if (!studentClass) {
     router.push('/classes');
   }
   const [messages, setMessages] = useState<Errors>({
