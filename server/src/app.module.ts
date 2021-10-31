@@ -8,15 +8,18 @@ import { CustomExceptionFilter } from './filters/custom-exception.filter';
 import { ValidationPipe } from './pipes/validation.pipe';
 import { StudentClass } from './domain/student-class/student-class.entity';
 import { StudentClassModule } from './domain/student-class/student-class.module';
+import { Student } from './domain/student/student.entity';
+import { StudentModule } from './domain/student/student.module';
 
 @Module({
   imports: [
     CourseModule,
     StudentClassModule,
+    StudentModule,
     TypeOrmModule.forRootAsync({
       useFactory: async () =>
         Object.assign(await getConnectionOptions(), {
-          entities: [Course, StudentClass],
+          entities: [Course, Student, StudentClass],
         }),
     }),
   ],
