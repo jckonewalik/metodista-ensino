@@ -99,7 +99,7 @@ export default function StudentClassForm({
               )}
             />
             <TextField
-              className="mt-5"
+              style={{ marginTop: 10 }}
               label="Nome"
               value={state.name}
               variant="standard"

@@ -6,6 +6,11 @@ const Home: NextPage = () => {
     <div className="bg-red-300 flex h-screen justify-center items-center">
       <ul>
         <li className="list-disc list-outside">
+          <Link href="/students">
+            <a className="font-bold text-xl">Alunos</a>
+          </Link>
+        </li>
+        <li className="list-disc list-outside">
           <Link href="/classes">
             <a className="font-bold text-xl">Classes</a>
           </Link>

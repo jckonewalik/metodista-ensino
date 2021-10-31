@@ -1,21 +1,16 @@
 import { GetServerSideProps, NextPage } from 'next';
 import Header from '../../../../components/Header';
 import buildClient from '../../../../api/build-client';
-import { CourseDTO } from '../../../../domain/course.dto';
-import { StudentClassDTO } from '../../../../domain/student-class.dto';
-import StudentClassForm from '../../../../components/StudentClassForm';
-import {
-  getStudentClass,
-  putStudentClasses,
-} from '../../../../api/student-classes.api';
 import { useState } from 'react';
 import { useRouter } from 'next/dist/client/router';
 import AppAlert from '../../../../components/AppAlert';
 import axios from 'axios';
+import { StudentDTO } from '../../../../domain/student.dto';
+import { getStudent, putStudents } from '../../../../api/students.api';
+import StudentForm from '../../../../components/StudentForm';
 
-interface EditClassPagePros {
-  studentClass?: StudentClassDTO;
-  courses: CourseDTO[];
+interface EditStudentPagePros {
+  student?: StudentDTO;
 }
 
 interface Errors {
@@ -23,27 +18,24 @@ interface Errors {
   messages: string[];
 }
 
-const EditStudentClassPage: NextPage<EditClassPagePros> = ({
-  studentClass,
-  courses,
-}) => {
+const EditStudentPage: NextPage<EditStudentPagePros> = ({ student }) => {
   const router = useRouter();
-  if (!studentClass) {
-    router.push('/classes');
+  if (!student) {
+    router.push('/students');
   }
   const [messages, setMessages] = useState<Errors>({
     isError: false,
     messages: [],
   });
-  const saveStudentClass = async (studentClass: StudentClassDTO) => {
+  const saveStudent = async (student: StudentDTO) => {
     try {
-      await putStudentClasses(axios, studentClass.id!!, {
-        name: studentClass.name,
-        isActive: studentClass.isActive,
+      await putStudents(axios, student.id!!, {
+        name: student.name,
+        gender: student.gender,
       });
       setMessages({
         isError: false,
-        messages: ['Turma atualizada com sucesso'],
+        messages: ['Aluno atualizado com sucesso'],
       });
     } catch (err) {
       setMessages({
@@ -56,13 +48,12 @@ const EditStudentClassPage: NextPage<EditClassPagePros> = ({
 
   return (
     <div className="flex flex-col h-screen bg-red-100">
-      <Header title="Alterar Turma" />
-      <StudentClassForm
-        courses={courses}
-        studentClass={studentClass}
-        onSave={saveStudentClass}
+      <Header title="Alterar Aluno" />
+      <StudentForm
+        student={student}
+        onSave={saveStudent}
         onCancel={() => {
-          router.push('/classes');
+          router.push('/students');
         }}
       />
       {messages.messages.length ? (
@@ -82,13 +73,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params;
   const client = buildClient({ ctx: context });
   try {
-    const studentClass = await getStudentClass(client, id);
-    const courses = [studentClass.course];
-
-    return { props: { studentClass, courses } };
+    const student = await getStudent(client, id);
+    return { props: { student } };
   } catch (err) {
     return { props: { studentClass: undefined, courses: undefined } };
   }
 };
 
-export default EditStudentClassPage;
+export default EditStudentPage;

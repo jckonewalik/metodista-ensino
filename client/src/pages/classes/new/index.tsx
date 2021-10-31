@@ -49,7 +49,7 @@ const NewStudentClassPage: NextPage<NewClassPagePros> = ({ courses }) => {
 
   return (
     <div className="flex flex-col h-screen bg-red-100">
-      <Header />
+      <Header title="Nova Turma" />
       <StudentClassForm
         courses={courses}
         onSave={saveStudentClass}
