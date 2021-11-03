@@ -40,6 +40,7 @@ const EditStudentClassPage: NextPage<EditClassPagePros> = ({
       await putStudentClasses(axios, studentClass.id!!, {
         name: studentClass.name,
         isActive: studentClass.isActive,
+        students: studentClass.students.map((s) => s.id!),
       });
       setMessages({
         isError: false,
@@ -55,7 +56,7 @@ const EditStudentClassPage: NextPage<EditClassPagePros> = ({
   };
 
   return (
-    <div className="flex flex-col h-screen bg-red-100">
+    <div className="flex flex-col h-screen overflow-hidden bg-red-100">
       <Header title="Alterar Turma" />
       <StudentClassForm
         courses={courses}

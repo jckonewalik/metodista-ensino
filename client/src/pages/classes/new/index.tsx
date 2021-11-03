@@ -32,6 +32,7 @@ const NewStudentClassPage: NextPage<NewClassPagePros> = ({ courses }) => {
         name: studentClass.name,
         isActive: studentClass.isActive,
         courseId: studentClass.course?.id,
+        students: studentClass.students.map((s) => s.id!),
       });
       setMessages({
         isError: false,

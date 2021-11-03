@@ -6,6 +6,13 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    minHeight: {
+      20: '5rem',
+    },
+    maxHeight: {
+      '4/5': '80%',
+      '1/2-screen': '50vh',
+    },
     extend: {},
   },
   variants: {

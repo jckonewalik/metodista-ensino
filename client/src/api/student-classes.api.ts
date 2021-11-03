@@ -1,9 +1,10 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance, AxiosResponse } from 'axios';
 import {
   InsertStudentClassDTO,
   StudentClassDTO,
   UpdateStudentClassDTO,
 } from '../domain/student-class.dto';
+import { InsertStudentDTO } from '../domain/student.dto';
 
 export const getStudentClass = async (
   client: AxiosInstance,
@@ -16,7 +17,12 @@ export const postStudentClasses = async (
   client: AxiosInstance,
   studentClass: InsertStudentClassDTO
 ): Promise<StudentClassDTO> => {
-  return (await client.post('/api/studentclasses', studentClass)).data;
+  return (
+    await client.post<InsertStudentDTO, AxiosResponse<StudentClassDTO>>(
+      '/api/studentclasses',
+      studentClass
+    )
+  ).data;
 };
 
 export const putStudentClasses = async (
@@ -24,5 +30,10 @@ export const putStudentClasses = async (
   id: string,
   studentClass: UpdateStudentClassDTO
 ): Promise<StudentClassDTO> => {
-  return (await client.put(`/api/studentclasses/${id}`, studentClass)).data;
+  return (
+    await client.put<UpdateStudentClassDTO, AxiosResponse<StudentClassDTO>>(
+      `/api/studentclasses/${id}`,
+      studentClass
+    )
+  ).data;
 };
