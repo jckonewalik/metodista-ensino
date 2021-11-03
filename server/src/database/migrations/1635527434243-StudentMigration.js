@@ -47,6 +47,11 @@ module.exports = class StudentMigration1635527434243 {
   }
 
   async down(queryRunner) {
+    const table = await queryRunner.getTable('student_class_students');
+    const foreignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('student_id') !== -1,
+    );
+    await queryRunner.dropForeignKey('student_class_students', foreignKey);
     await queryRunner.dropTable('student');
   }
 };
