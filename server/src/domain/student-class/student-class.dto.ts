@@ -1,6 +1,7 @@
 import { IsBoolean, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { Course } from '../course/course.entity';
 import { StudentDTO } from '../student/student.dto';
+import { TeacherDTO } from '../teacher/teacher.dto';
 import { StudentClass } from './student-class.entity';
 
 export class InsertStudentClassDTO {
@@ -16,6 +17,7 @@ export class InsertStudentClassDTO {
   isActive: boolean;
 
   students: string[];
+  teachers: string[];
 }
 
 export class UpdateStudentClassDTO {
@@ -27,6 +29,7 @@ export class UpdateStudentClassDTO {
   isActive: boolean;
 
   students: string[];
+  teachers: string[];
 }
 
 export class StudentClassDTO {
@@ -41,6 +44,9 @@ export class StudentClassDTO {
     this.students = studentClass.students?.map(
       (student) => new StudentDTO(student),
     );
+    this.teachers = studentClass.teachers?.map(
+      (teacher) => new TeacherDTO(teacher),
+    );
   }
 
   id: string;
@@ -51,6 +57,7 @@ export class StudentClassDTO {
   name: string;
   isActive: boolean;
   students: StudentDTO[];
+  teachers: TeacherDTO[];
 }
 
 export class StudentClassSummaryDTO {

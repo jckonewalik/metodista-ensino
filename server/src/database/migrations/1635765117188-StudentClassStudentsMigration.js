@@ -38,6 +38,15 @@ module.exports = class StudentClassStudentsMigration1635765117188 {
   }
 
   async down(queryRunner) {
-    await queryRunner.dropTable('student');
+    const table = await queryRunner.getTable('student_class_students');
+    const foreignKeyStudent = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('student_id') !== -1,
+    );
+    await queryRunner.dropForeignKey('student_class', foreignKeyStudent);
+    const foreignKeyClass = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('student_class_id') !== -1,
+    );
+    await queryRunner.dropForeignKey('student_class', foreignKeyClass);
+    await queryRunner.dropTable('student_class_students');
   }
 };

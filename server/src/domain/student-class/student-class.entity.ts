@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Course } from '../course/course.entity';
 import { UpdateStudentClassDTO } from './student-class.dto';
 import { Student } from '../student/student.entity';
+import { Teacher } from '../teacher/teacher.entity';
 @Entity({ name: 'student_class' })
 export class StudentClass {
   @PrimaryColumn()
@@ -44,6 +45,20 @@ export class StudentClass {
   })
   students: Student[];
 
+  @ManyToMany(() => Teacher)
+  @JoinTable({
+    name: 'student_class_teachers',
+    joinColumn: {
+      name: 'student_class_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'teacher_id',
+      referencedColumnName: 'id',
+    },
+  })
+  teachers: Teacher[];
+
   private constructor() {}
 
   static create(
@@ -51,6 +66,7 @@ export class StudentClass {
     name,
     isActive,
     students: Student[],
+    teachers: Teacher[],
   ): StudentClass {
     if (!course.isActive) {
       throw new BadRequestException('Course is not active', 'courseId');
@@ -62,14 +78,19 @@ export class StudentClass {
     studentClass.name = name;
     studentClass.isActive = isActive;
     studentClass.students = students;
-
+    studentClass.teachers = teachers;
     return studentClass;
   }
 
-  update(studentClass: UpdateStudentClassDTO, students: Student[]) {
+  update(
+    studentClass: UpdateStudentClassDTO,
+    students: Student[],
+    teachers: Teacher[],
+  ) {
     this.name = studentClass.name;
     this.isActive = studentClass.isActive;
     this.students = students;
+    this.teachers = teachers;
     this.updatedAt = new Date();
   }
 }

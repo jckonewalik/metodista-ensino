@@ -1,10 +1,10 @@
 const { Table } = require('typeorm');
 
-module.exports = class StudentMigration1635527434243 {
+module.exports = class TeachersMigration1635970688975 {
   async up(queryRunner) {
     await queryRunner.createTable(
       new Table({
-        name: 'student',
+        name: 'teacher',
         columns: [
           {
             name: 'id',
@@ -47,6 +47,6 @@ module.exports = class StudentMigration1635527434243 {
   }
 
   async down(queryRunner) {
-    await queryRunner.dropTable('student');
+    await queryRunner.dropTable('teacher');
   }
 };

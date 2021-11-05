@@ -10,16 +10,19 @@ import { StudentClass } from './domain/student-class/student-class.entity';
 import { StudentClassModule } from './domain/student-class/student-class.module';
 import { Student } from './domain/student/student.entity';
 import { StudentModule } from './domain/student/student.module';
+import { TeacherModule } from './domain/teacher/teacher.module';
+import { Teacher } from './domain/teacher/teacher.entity';
 
 @Module({
   imports: [
     CourseModule,
     StudentClassModule,
     StudentModule,
+    TeacherModule,
     TypeOrmModule.forRootAsync({
       useFactory: async () =>
         Object.assign(await getConnectionOptions(), {
-          entities: [Course, Student, StudentClass],
+          entities: [Course, Student, StudentClass, Teacher],
         }),
     }),
   ],

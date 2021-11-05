@@ -11,6 +11,8 @@ import { NotFoundException } from '../../exceptions/not-found.exception';
 import { CourseRepository } from '../course/course.repository';
 import { Student } from '../student/student.entity';
 import { StudentRepository } from '../student/student.repository';
+import { Teacher } from '../teacher/teacher.entity';
+import { TeacherRepository } from '../teacher/teacher.repository';
 import {
   InsertStudentClassDTO,
   StudentClassDTO,
@@ -26,6 +28,7 @@ export class StudentClassController {
     private courseRepository: CourseRepository,
     private studentRepository: StudentRepository,
     private studentClassRepository: StudentClassRepository,
+    private teacherRepository: TeacherRepository,
   ) {}
 
   @Post()
@@ -39,11 +42,13 @@ export class StudentClassController {
       throw new NotFoundException('Selected course does not exist', 'courseId');
     }
     const students = await this.findStudents(studentClassDTO.students);
+    const teachers = await this.findTeachers(studentClassDTO.teachers);
     const studentClass = StudentClass.create(
       course,
       studentClassDTO.name,
       studentClassDTO.isActive,
       students,
+      teachers,
     );
     const insertedCourse = await this.studentClassRepository.save(studentClass);
     return new StudentClassDTO(insertedCourse, course);
@@ -59,7 +64,7 @@ export class StudentClassController {
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<StudentClassDTO> {
     const studentClass = await this.studentClassRepository.findOne(id, {
-      relations: ['students'],
+      relations: ['students', 'teachers'],
     });
     if (studentClass == null) {
       throw new NotFoundException('A turma não existe', 'id');
@@ -82,8 +87,9 @@ export class StudentClassController {
       throw new NotFoundException('A turma não existe', 'id');
     }
     const students = await this.findStudents(studentClass.students);
+    const teachers = await this.findTeachers(studentClass.teachers);
 
-    original.update(studentClass, students);
+    original.update(studentClass, students, teachers);
     await this.studentClassRepository.save(original);
   }
 
@@ -101,6 +107,24 @@ export class StudentClassController {
       throw new NotFoundException(
         'Os alunos informados não foram encontrados',
         'student.id',
+      );
+    }
+  }
+
+  private async findTeachers(ids: string[]): Promise<Teacher[]> {
+    try {
+      const teachers = await this.teacherRepository.findByIds(ids);
+      if (teachers.length != ids.length) {
+        throw new NotFoundException(
+          'Os professores informados não foram encontrados',
+          'teacher.id',
+        );
+      }
+      return teachers;
+    } catch (err) {
+      throw new NotFoundException(
+        'Os professores informados não foram encontrados',
+        'teacher.id',
       );
     }
   }
