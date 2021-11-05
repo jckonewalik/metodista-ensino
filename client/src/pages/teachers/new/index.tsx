@@ -2,32 +2,32 @@ import axios from 'axios';
 import { NextPage } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import { useState } from 'react';
-import { postStudents } from '../../../api/students.api';
+import { postTeachers } from '../../../api/teachers.api';
 import AppAlert from '../../../components/AppAlert';
 import Header from '../../../components/Header';
 import PersonForm from '../../../components/PersonForm';
-import { StudentDTO } from '../../../domain/student.dto';
+import { TeacherDTO } from '../../../domain/teacher.dto';
 
 interface Errors {
   isError: boolean;
   messages: string[];
 }
 
-const NewStudentPage: NextPage = () => {
+const NewTeacherPage: NextPage = () => {
   const [messages, setMessages] = useState<Errors>({
     isError: false,
     messages: [],
   });
   const router = useRouter();
-  const saveStudent = async (student: StudentDTO) => {
+  const saveTeacher = async (teacher: TeacherDTO) => {
     try {
-      await postStudents(axios, {
-        name: student.name,
-        gender: student.gender,
+      await postTeachers(axios, {
+        name: teacher.name,
+        gender: teacher.gender,
       });
       setMessages({
         isError: false,
-        messages: ['Aluno cadastrado com sucesso'],
+        messages: ['Professor cadastrado com sucesso'],
       });
     } catch (err) {
       setMessages({
@@ -40,11 +40,11 @@ const NewStudentPage: NextPage = () => {
 
   return (
     <div className="flex flex-col h-screen bg-red-100">
-      <Header title="Novo Aluno" />
+      <Header title="Novo Professor" />
       <PersonForm
-        onSave={saveStudent}
+        onSave={saveTeacher}
         onCancel={() => {
-          router.push('/students');
+          router.push('/teachers');
         }}
       />
       {messages.messages.length ? (
@@ -59,4 +59,4 @@ const NewStudentPage: NextPage = () => {
   );
 };
 
-export default NewStudentPage;
+export default NewTeacherPage;

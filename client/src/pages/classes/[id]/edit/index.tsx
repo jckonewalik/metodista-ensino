@@ -41,6 +41,7 @@ const EditStudentClassPage: NextPage<EditClassPagePros> = ({
         name: studentClass.name,
         isActive: studentClass.isActive,
         students: studentClass.students.map((s) => s.id!),
+        teachers: studentClass.teachers.map((s) => s.id!),
       });
       setMessages({
         isError: false,

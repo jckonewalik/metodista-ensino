@@ -20,6 +20,8 @@ import {
 import { StudentDTO } from '../domain/student.dto';
 import { getStudents } from '../api/students.api';
 import axios from 'axios';
+import { TeacherDTO } from '../domain/teacher.dto';
+import { getTeachers } from '../api/teachers.api';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -31,17 +33,16 @@ interface TabPanelProps {
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
-  return (
+  return value === index ? (
     <div
       role="tabpanel"
-      hidden={value !== index}
       id={`class-tabpanel-${index}`}
       aria-labelledby={`class-tab-${index}`}
       {...other}
     >
-      {value === index && children}
+      {children}
     </div>
-  );
+  ) : null;
 }
 
 interface StudentClassFormProps {
@@ -68,13 +69,23 @@ export default function StudentClassForm({
     studentClass == undefined ? new StudentClassDTO() : studentClass
   );
   const [students, setStudents] = useState<StudentDTO[]>([]);
+  const [teachers, setTeachers] = useState<TeacherDTO[]>([]);
   const [studentInputSearch, setStudentInputSearch] = useState('');
+  const [teacherInputSearch, setTeacherInputSearch] = useState('');
   const delayTimer = useRef<NodeJS.Timeout>();
   const searchStudent = async (name: string, page: number) => {
     const response = await getStudents(axios, name, page);
     setStudents(
       response.data.filter(
         (s) => !state.students.some((student) => student.id === s.id)
+      )
+    );
+  };
+  const searchTeacher = async (name: string, page: number) => {
+    const response = await getTeachers(axios, name, page);
+    setTeachers(
+      response.data.filter(
+        (s) => !state.teachers.some((teacher) => teacher.id === s.id)
       )
     );
   };
@@ -86,6 +97,14 @@ export default function StudentClassForm({
       }, 1000);
     }
   }, [studentInputSearch]);
+  useEffect(() => {
+    if (teacherInputSearch.trim().length > 3) {
+      clearTimeout(delayTimer.current!);
+      delayTimer.current = setTimeout(() => {
+        searchTeacher(teacherInputSearch, 1);
+      }, 1000);
+    }
+  }, [teacherInputSearch]);
   const handleStudentSelect = (student: StudentDTO | null) => {
     if (student && !state.students.some((s) => s.id === student.id)) {
       setState({ ...state, students: [...state.students, student] });
@@ -93,8 +112,18 @@ export default function StudentClassForm({
       setStudentInputSearch('');
     }
   };
+  const handleTeacherSelect = (teacher: TeacherDTO | null) => {
+    if (teacher && !state.teachers.some((s) => s.id === teacher.id)) {
+      setState({ ...state, teachers: [...state.teachers, teacher] });
+      setTeachers(students.filter((s) => s.id !== teacher.id));
+      setTeacherInputSearch('');
+    }
+  };
   const removeStudent = (id: string) => {
     setState({ ...state, students: state.students.filter((s) => s.id !== id) });
+  };
+  const removeTeacher = (id: string) => {
+    setState({ ...state, teachers: state.teachers.filter((s) => s.id !== id) });
   };
   return (
     <div className="flex flex-1 flex-col bg-red-100">
@@ -112,9 +141,10 @@ export default function StudentClassForm({
             <Tab label="Alunos" />
           </Tabs>
         </Box>
-        <TabPanel index={0} value={tab}>
-          <form className="flex flex-col p-5">
+        <TabPanel index={0} value={tab} className="flex flex-col p-5">
+          <form className="flex flex-col">
             <Autocomplete
+              style={{ marginBottom: 20 }}
               disabled={state.id !== undefined}
               disablePortal
               value={state.course}
@@ -154,19 +184,47 @@ export default function StudentClassForm({
             />
           </form>
         </TabPanel>
-        <TabPanel index={1} value={tab}>
-          <form className="flex flex-col p-5">
-            <Autocomplete
-              options={[]}
-              filterOptions={(x) => x}
-              id="combo-teachers"
-              renderInput={(params) => (
-                <TextField {...params} label="Buscar" variant="standard" />
-              )}
-            />
-          </form>
+        <TabPanel index={1} value={tab} className="flex flex-col p-5">
+          <Autocomplete
+            style={{ marginBottom: 20 }}
+            options={teachers}
+            id="combo-teachers"
+            filterOptions={(x) => x}
+            getOptionLabel={(option) => option.name!}
+            onInputChange={(event, newInputValue) => {
+              setTeacherInputSearch(newInputValue);
+            }}
+            onChange={(event: any, value: TeacherDTO | null) =>
+              handleTeacherSelect(value)
+            }
+            renderInput={(params) => (
+              <TextField {...params} label="Buscar" variant="standard" />
+            )}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+          />
+          <div className="max-h-1/2-screen overflow-y-auto">
+            {state.teachers
+              .sort((a, b) => a.name?.localeCompare(b.name || '') || 0)
+              .map((teacher) => (
+                <div
+                  key={teacher.id}
+                  className="flex mt-2 mb-2 p-2 items-center justify-between bg-gray-200 rounded-md"
+                >
+                  <span>{teacher.name}</span>
+                  <div>
+                    <Fab
+                      size="small"
+                      color="primary"
+                      onClick={() => removeTeacher(teacher.id!)}
+                    >
+                      <RemoveIcon />
+                    </Fab>
+                  </div>
+                </div>
+              ))}
+          </div>
         </TabPanel>
-        <TabPanel index={2} value={tab} className="flex flex-col flex-1 p-5">
+        <TabPanel index={2} value={tab} className="flex flex-col p-5">
           <Autocomplete
             style={{ marginBottom: 20 }}
             options={students}

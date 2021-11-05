@@ -5,12 +5,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/dist/client/router';
 import AppAlert from '../../../../components/AppAlert';
 import axios from 'axios';
-import { StudentDTO } from '../../../../domain/student.dto';
-import { getStudent, putStudents } from '../../../../api/students.api';
+import { TeacherDTO } from '../../../../domain/teacher.dto';
+import { getTeacher, putTeachers } from '../../../../api/teachers.api';
 import PersonForm from '../../../../components/PersonForm';
 
-interface EditStudentPagePros {
-  student?: StudentDTO;
+interface EditTeacherPagePros {
+  teacher?: TeacherDTO;
 }
 
 interface Errors {
@@ -18,24 +18,24 @@ interface Errors {
   messages: string[];
 }
 
-const EditStudentPage: NextPage<EditStudentPagePros> = ({ student }) => {
+const EditTeacherPage: NextPage<EditTeacherPagePros> = ({ teacher }) => {
   const router = useRouter();
-  if (!student) {
-    router.push('/students');
+  if (!teacher) {
+    router.push('/teachers');
   }
   const [messages, setMessages] = useState<Errors>({
     isError: false,
     messages: [],
   });
-  const saveStudent = async (student: StudentDTO) => {
+  const saveTeacher = async (teacher: TeacherDTO) => {
     try {
-      await putStudents(axios, student.id!!, {
-        name: student.name,
-        gender: student.gender,
+      await putTeachers(axios, teacher.id!!, {
+        name: teacher.name,
+        gender: teacher.gender,
       });
       setMessages({
         isError: false,
-        messages: ['Aluno atualizado com sucesso'],
+        messages: ['Professor atualizado com sucesso'],
       });
     } catch (err) {
       setMessages({
@@ -48,12 +48,12 @@ const EditStudentPage: NextPage<EditStudentPagePros> = ({ student }) => {
 
   return (
     <div className="flex flex-col h-screen bg-red-100">
-      <Header title="Alterar Aluno" />
+      <Header title="Alterar Professor" />
       <PersonForm
-        person={student}
-        onSave={saveStudent}
+        person={teacher}
+        onSave={saveTeacher}
         onCancel={() => {
-          router.push('/students');
+          router.push('/teachers');
         }}
       />
       {messages.messages.length ? (
@@ -73,11 +73,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params;
   const client = buildClient({ ctx: context });
   try {
-    const student = await getStudent(client, id);
-    return { props: { student } };
+    const teacher = await getTeacher(client, id);
+    return { props: { teacher } };
   } catch (err) {
-    return { props: { studentClass: undefined, courses: undefined } };
+    return { props: { teacherClass: undefined, courses: undefined } };
   }
 };
 
-export default EditStudentPage;
+export default EditTeacherPage;

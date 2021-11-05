@@ -11,8 +11,13 @@ const Home: NextPage = () => {
           </Link>
         </li>
         <li className="list-disc list-outside">
+          <Link href="/teachers">
+            <a className="font-bold text-xl">Professores</a>
+          </Link>
+        </li>
+        <li className="list-disc list-outside">
           <Link href="/classes">
-            <a className="font-bold text-xl">Classes</a>
+            <a className="font-bold text-xl">Turmas</a>
           </Link>
         </li>
       </ul>

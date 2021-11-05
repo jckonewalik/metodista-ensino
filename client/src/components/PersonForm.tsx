@@ -1,35 +1,21 @@
-import {
-  Autocomplete,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  Tabs,
-  Box,
-  Tab,
-  Button,
-} from '@mui/material';
+import { Autocomplete, TextField, Button } from '@mui/material';
 import { Save, Cancel } from '@mui/icons-material';
-import { SyntheticEvent, useState } from 'react';
-import { CourseDTO } from '../domain/course.dto';
-import {
-  InsertStudentClassDTO,
-  StudentClassDTO,
-} from '../domain/student-class.dto';
-import { StudentDTO } from '../domain/student.dto';
+import { useState } from 'react';
+import { PersonDTO } from '../domain/person.dto';
 
-interface StudentFormProps {
-  student?: StudentDTO;
-  onSave: (student: StudentDTO) => void;
+interface PersonFormProps {
+  person?: PersonDTO;
+  onSave: (person: PersonDTO) => void;
   onCancel: () => void;
 }
 
-export default function StudentForm({
-  student,
+export default function PersonForm({
+  person,
   onSave,
   onCancel,
-}: StudentFormProps) {
-  const [state, setState] = useState<StudentDTO>(
-    student == undefined ? new StudentDTO() : student
+}: PersonFormProps) {
+  const [state, setState] = useState<PersonDTO>(
+    person == undefined ? new PersonDTO() : person
   );
   const genders = [
     { code: 'M', description: 'Masculino' },
@@ -76,7 +62,7 @@ export default function StudentForm({
           onClick={async () => {
             await onSave(state);
             if (!state.id) {
-              setState(new StudentDTO());
+              setState(new PersonDTO());
             }
           }}
         >

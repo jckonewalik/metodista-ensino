@@ -1,8 +1,8 @@
 import { PersonDTO } from './person.dto';
 
-export class InsertStudentDTO {
+export class InsertTeacherDTO {
   name?: string;
   gender?: string;
 }
 
-export class StudentDTO extends PersonDTO {}
+export class TeacherDTO extends PersonDTO {}

@@ -1,17 +1,20 @@
 import { CourseDTO } from './course.dto';
 import { StudentDTO } from './student.dto';
+import { TeacherDTO } from './teacher.dto';
 
 export class InsertStudentClassDTO {
   name?: string;
   courseId?: string;
   isActive: boolean = true;
   students: string[] = [];
+  teachers: string[] = [];
 }
 
 export class UpdateStudentClassDTO {
   name?: string;
   isActive: boolean = true;
   students: string[] = [];
+  teachers: string[] = [];
 }
 
 export class StudentClassSummaryDTO {
@@ -28,4 +31,5 @@ export class StudentClassDTO {
   name?: string = '';
   isActive: boolean = true;
   students: StudentDTO[] = [];
+  teachers: TeacherDTO[] = [];
 }

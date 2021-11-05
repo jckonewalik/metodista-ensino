@@ -23,7 +23,7 @@ const ClassesPage: NextPage<ClassesPagePros> = ({ studentClasses }) => {
   return (
     <div className=" bg-red-100 h-screen relative">
       <Header title="Turmas" />
-      <div className="grid auto-rows-min h-5/6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 overflow-y-scroll">
+      <div className="grid auto-rows-min h-5/6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 overflow-y-auto">
         {studentClasses.map((studentClass) => (
           <ClassCard
             key={studentClass.id}
