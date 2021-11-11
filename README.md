@@ -18,14 +18,14 @@ Metodista Ensino - é um projeto de cunho filantrôpico, com o ojetivo de organi
 
 ## ⚙️ Funcionalidades
 
-- [] Cadastro de novas turmas:
+- [x] Cadastro de novas turmas:
 
   - [x] curso e nome da turma
-  - [] alunos
-  - [] professores
+  - [x] alunos
+  - [x] professores
 
-- [] Cadastro de novos alunos
-- [] Cadastro de novos professores
+- [x] Cadastro de novos alunos
+- [x] Cadastro de novos professores
 - [] Cadastro de novos cursos
 
   - [] Cadastro de lições
@@ -39,7 +39,7 @@ Metodista Ensino - é um projeto de cunho filantrôpico, com o ojetivo de organi
 ### Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
-[Git](https://git-scm.com). [Node.js](https://nodejs.org/en/). [Yarn](https://yarnpkg.com/) [Expo-cli](https://docs.expo.io/workflow/expo-cli/)
+[Git](https://git-scm.com). [Node.js](https://nodejs.org/en/). [NPM](https://www.npmjs.com/). [Docker](https://www.docker.com/products/docker-desktop)
 Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
 
 #### 🧭 Rodando a aplicação
